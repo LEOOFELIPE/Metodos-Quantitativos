@@ -3,6 +3,8 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as stats
+import matplotlib.lines as mlines
+
 
 def calcular_multiplas_medias(arquivo_excel, qtde_medias, qtde_amostras):
     try:
@@ -56,7 +58,7 @@ intervalo = stats.norm.interval(0.95, loc=media, scale=desvio_padrao)
 plt.figure(figsize=(8, 5))
 
 # Histograma dos retornos
-plt.hist(resultado ,bins='auto', alpha=0.6, color="yellow", edgecolor="black", label="Histograma")
+plt.hist(resultado ,bins='auto', alpha=0.6, color="blue", edgecolor="black", label="Histograma")
 
 # Curva da distribuição normal
 #plt.plot(x, y, color="red", linewidth=2, label="Curva Normal")
@@ -68,18 +70,26 @@ plt.axvline(intervalo[1], color="red", linestyle="dashed", label=f"Limite Superi
 # Linha da média
 plt.axvline(media, color="black", linestyle="solid", label=f"Média: {media:.5f}%")
 
-legendas = [
+desvio_padrao_marker = mlines.Line2D([], [], color="yellow", linestyle="None", marker="o", label=f"Desvio Padrão: {desvio_padrao:.5f}%")
+
+"""legendas = [
     "Histograma",
     f"Limite Inferior (95%): {intervalo[0]:.5f}%",
     f"Limite Superior (95%): {intervalo[1]:.5f}%",
     f"Média: {media:.5f}%",
     f"Desvio Padrão: {desvio_padrao:.5f}%"  # Adicionando manualmente
-]
+]"""
+
 # Adicionar títulos e legenda
 plt.title("Histograma dos Retornos e Intervalo de Confiança")
 plt.xlabel("Retorno (%)")
 plt.ylabel("Frequência")
-plt.legend(legendas)
+plt.legend(handles=[plt.Rectangle((0,0),1,1, color="blue", label="Histograma"),
+                    plt.axvline(intervalo[0], color="red", linestyle="dashed", label=f"Limite Inferior (95%): {intervalo[0]:.5f}%"),
+                    plt.axvline(intervalo[1], color="red", linestyle="dashed", label=f"Limite Superior (95%): {intervalo[1]:.5f}%"),
+                    plt.axvline(media, color="black", linestyle="solid", label=f"Média: {media:.5f}%"),
+                    desvio_padrao_marker])
+
 
 # Mostrar gráfico
 plt.show()
